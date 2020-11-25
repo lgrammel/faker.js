@@ -28,11 +28,7 @@ If we meet some day, and you think this stuff is worth it, you can buy me a beer
 
 */
 
-function rnd(a, b) {
-    //calling rnd() with no arguments is identical to rnd(0, 100)
-    a = a || 0;
-    b = b || 100;
-
+function rnd(a = 0, b = 100) {
     if (typeof b === 'number' && typeof a === 'number') {
 
         // 9/2018 - Added faker random to ensure mersenne and seed

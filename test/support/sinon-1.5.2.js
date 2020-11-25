@@ -312,7 +312,7 @@ buster.format.ascii = (function () {
         return false;
     }
 
-    function ascii(object, processed, indent) {
+    function ascii(object, processed = [], indent) {
         if (typeof object == "string") {
             var quote = typeof this.quoteStrings != "boolean" || this.quoteStrings;
             return processed || quote ? '"' + object + '"' : object;
@@ -321,8 +321,6 @@ buster.format.ascii = (function () {
         if (typeof object == "function" && !(object instanceof RegExp)) {
             return ascii.func(object);
         }
-
-        processed = processed || [];
 
         if (isCircular(object, processed)) {
             return "[Circular]";
@@ -358,8 +356,7 @@ buster.format.ascii = (function () {
         return "function " + buster.functionName(func) + "() {}";
     };
 
-    ascii.array = function (array, processed) {
-        processed = processed || [];
+    ascii.array = function(array, processed = []) {
         processed.push(array);
         var pieces = [];
 
@@ -370,10 +367,8 @@ buster.format.ascii = (function () {
         return "[" + pieces.join(", ") + "]";
     };
 
-    ascii.object = function (object, processed, indent) {
-        processed = processed || [];
+    ascii.object = function(object, processed = [], indent = 0) {
         processed.push(object);
-        indent = indent || 0;
         var pieces = [], properties = keys(object), prop, str, obj;
         var is = "";
         var length = 3;
@@ -671,9 +666,8 @@ var sinon = (function (buster) {
             return this.displayName || "sinon fake";
         },
 
-        getConfig: function (custom) {
+        getConfig: function(custom = {}) {
             var config = {};
-            custom = custom || {};
             var defaults = sinon.defaultConfig;
 
             for (var prop in defaults) {
@@ -2245,7 +2239,7 @@ var sinon = (function (buster) {
                 }
             },
 
-            allowsCall: function allowsCall(thisValue, args) {
+            allowsCall: function allowsCall(thisValue, args = []) {
                 if (this.met() && receivedMaxCalls(this)) {
                     return false;
                 }
@@ -2257,8 +2251,6 @@ var sinon = (function (buster) {
                 if (!("expectedArguments" in this)) {
                     return true;
                 }
-
-                args = args || [];
 
                 if (args.length < this.expectedArguments.length) {
                     return false;
@@ -3929,14 +3921,11 @@ if (typeof module == "object" && typeof require == "function") {
         };
     }
 
-    function testCase(tests, prefix) {
+    function testCase(tests, prefix = "test") {
         /*jsl:ignore*/
         if (!tests || typeof tests != "object") {
             throw new TypeError("sinon.testCase needs an object with test functions");
         }
-        /*jsl:end*/
-
-        prefix = prefix || "test";
         var rPrefix = new RegExp("^" + prefix);
         var methods = {}, testName, property, method;
         var setUp = tests.setUp;
