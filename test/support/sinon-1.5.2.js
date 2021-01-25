@@ -199,9 +199,7 @@ var buster = (function (setTimeout, B) {
     }
 
     if (Array.prototype.some) {
-        buster.some = function (arr, fn, thisp) {
-            return arr.some(fn, thisp);
-        };
+        buster.some = (arr, fn, thisp) => arr.some(fn, thisp);
     } else {
         // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/some
         buster.some = function (arr, fun, thisp) {
@@ -221,9 +219,7 @@ var buster = (function (setTimeout, B) {
     }
 
     if (Array.prototype.filter) {
-        buster.filter = function (arr, fn, thisp) {
-            return arr.filter(fn, thisp);
-        };
+        buster.filter = (arr, fn, thisp) => arr.filter(fn, thisp);
     } else {
         // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/filter
         buster.filter = function (fn, thisp) {
@@ -249,9 +245,7 @@ var buster = (function (setTimeout, B) {
         module.exports = buster;
         buster.eventEmitter = require("./buster-event-emitter");
         Object.defineProperty(buster, "defineVersionGetter", {
-            get: function () {
-                return require("./define-version-getter");
-            }
+            get: () => require("./define-version-getter")
         });
     }
 
@@ -354,9 +348,7 @@ buster.format.ascii = (function () {
         return ascii.object.call(this, object, processed, indent);
     }
 
-    ascii.func = function (func) {
-        return "function " + buster.functionName(func) + "() {}";
-    };
+    ascii.func = func => "function " + buster.functionName(func) + "() {}";
 
     ascii.array = function (array, processed) {
         processed = processed || [];
@@ -685,9 +677,7 @@ var sinon = (function (buster) {
             return config;
         },
 
-        format: function (val) {
-            return "" + val;
-        },
+        format: val => "" + val,
 
         defaultConfig: {
             injectIntoThis: true,
@@ -714,17 +704,15 @@ var sinon = (function (buster) {
             return true;
         },
 
-        orderByFirstCall: function (spies) {
-            return spies.sort(function (a, b) {
-                // uuid, won't ever be equal
-                var aCall = a.getCall(0);
-                var bCall = b.getCall(0);
-                var aId = aCall && aCall.callId || -1;
-                var bId = bCall && bCall.callId || -1;
+        orderByFirstCall: spies => spies.sort(function (a, b) {
+            // uuid, won't ever be equal
+            var aCall = a.getCall(0);
+            var bCall = b.getCall(0);
+            var aId = aCall && aCall.callId || -1;
+            var bId = bCall && bCall.callId || -1;
 
-                return aId < bId ? -1 : 1;
-            });
-        },
+            return aId < bId ? -1 : 1;
+        }),
 
         log: function () {},
 
@@ -779,9 +767,7 @@ var sinon = (function (buster) {
     } else if (isNode) {
         try {
             var util = require("util");
-            sinon.format = function (value) {
-                return typeof value == "object" && value.toString === Object.prototype.toString ? util.inspect(value) : value;
-            };
+            sinon.format = value => typeof value == "object" && value.toString === Object.prototype.toString ? util.inspect(value) : value;
         } catch (e) {
             /* Node, but no util module - would be very old, but better safe than
              sorry */
@@ -862,9 +848,7 @@ var sinon = (function (buster) {
         }
         var m1 = this;
         var or = sinon.create(matcher);
-        or.test = function (actual) {
-            return m1.test(actual) || m2.test(actual);
-        };
+        or.test = actual => m1.test(actual) || m2.test(actual);
         or.message = m1.message + ".or(" + m2.message + ")";
         return or;
     };
@@ -875,9 +859,7 @@ var sinon = (function (buster) {
         }
         var m1 = this;
         var and = sinon.create(matcher);
-        and.test = function (actual) {
-            return m1.test(actual) && m2.test(actual);
-        };
+        and.test = actual => m1.test(actual) && m2.test(actual);
         and.message = m1.message + ".and(" + m2.message + ")";
         return and;
     };
@@ -888,9 +870,7 @@ var sinon = (function (buster) {
         switch (type) {
         case "object":
             if (typeof expectation.test === "function") {
-                m.test = function (actual) {
-                    return expectation.test(actual) === true;
-                };
+                m.test = actual => expectation.test(actual) === true;
                 m.message = "match(" + sinon.functionName(expectation.test) + ")";
                 return m;
             }
@@ -900,15 +880,11 @@ var sinon = (function (buster) {
                     str.push(key + ": " + expectation[key]);
                 }
             }
-            m.test = function (actual) {
-                return matchObject(expectation, actual);
-            };
+            m.test = actual => matchObject(expectation, actual);
             m.message = "match(" + str.join(", ") + ")";
             break;
         case "number":
-            m.test = function (actual) {
-                return expectation == actual;
-            };
+            m.test = actual => expectation == actual;
             break;
         case "string":
             m.test = function (actual) {
@@ -936,9 +912,7 @@ var sinon = (function (buster) {
             }
             break;
         default:
-            m.test = function (actual) {
-              return sinon.deepEqual(expectation, actual);
-            };
+            m.test = actual => sinon.deepEqual(expectation, actual);
         }
         if (!m.message) {
             m.message = "match(" + expectation + ")";
@@ -948,40 +922,24 @@ var sinon = (function (buster) {
 
     match.isMatcher = isMatcher;
 
-    match.any = match(function () {
-        return true;
-    }, "any");
+    match.any = match(() => true, "any");
 
-    match.defined = match(function (actual) {
-        return actual !== null && actual !== undefined;
-    }, "defined");
+    match.defined = match(actual => actual !== null && actual !== undefined, "defined");
 
-    match.truthy = match(function (actual) {
-        return !!actual;
-    }, "truthy");
+    match.truthy = match(actual => !!actual, "truthy");
 
-    match.falsy = match(function (actual) {
-        return !actual;
-    }, "falsy");
+    match.falsy = match(actual => !actual, "falsy");
 
-    match.same = function (expectation) {
-        return match(function (actual) {
-            return expectation === actual;
-        }, "same(" + expectation + ")");
-    };
+    match.same = expectation => match(actual => expectation === actual, "same(" + expectation + ")");
 
     match.typeOf = function (type) {
         assertType(type, "string", "type");
-        return match(function (actual) {
-            return sinon.typeOf(actual) === type;
-        }, "typeOf(\"" + type + "\")");
+        return match(actual => sinon.typeOf(actual) === type, "typeOf(\"" + type + "\")");
     };
 
     match.instanceOf = function (type) {
         assertType(type, "function", "type");
-        return match(function (actual) {
-            return actual instanceof type;
-        }, "instanceOf(" + sinon.functionName(type) + ")");
+        return match(actual => actual instanceof type, "instanceOf(" + sinon.functionName(type) + ")");
     };
 
     function createPropertyMatcher(propertyTest, messagePrefix) {
@@ -1010,9 +968,7 @@ var sinon = (function (buster) {
         return actual[property] !== undefined;
     }, "has");
 
-    match.hasOwn = createPropertyMatcher(function (actual, property) {
-        return actual.hasOwnProperty(property);
-    }, "hasOwn");
+    match.hasOwn = createPropertyMatcher((actual, property) => actual.hasOwnProperty(property), "hasOwn");
 
     match.bool = match.typeOf("boolean");
     match.number = match.typeOf("number");
@@ -1335,9 +1291,9 @@ var sinon = (function (buster) {
         delegateToCalls(spyApi, "calledWithExactly", true);
         delegateToCalls(spyApi, "alwaysCalledWithExactly", false, "calledWithExactly");
         delegateToCalls(spyApi, "neverCalledWith", false, "notCalledWith",
-            function () { return true; });
+            () => true);
         delegateToCalls(spyApi, "neverCalledWithMatch", false, "notCalledWithMatch",
-            function () { return true; });
+            () => true);
         delegateToCalls(spyApi, "threw", true);
         delegateToCalls(spyApi, "alwaysThrew", false, "threw");
         delegateToCalls(spyApi, "returned", true);
@@ -1359,13 +1315,9 @@ var sinon = (function (buster) {
         });
 
         spyApi.formatters = {
-            "c": function (spy) {
-                return sinon.timesInWords(spy.callCount);
-            },
+            "c": spy => sinon.timesInWords(spy.callCount),
 
-            "n": function (spy) {
-                return spy.toString();
-            },
+            "n": spy => spy.toString(),
 
             "C": function (spy) {
                 var calls = [];
@@ -1902,12 +1854,10 @@ var sinon = (function (buster) {
             if (proto.hasOwnProperty(method) &&
                 method.match(/^(callsArg|yields|thenYields$)/) &&
                 !method.match(/Async/)) {
-                proto[method + 'Async'] = (function (syncFnName) {
-                    return function () {
-                        this.callbackAsync = true;
-                        return this[syncFnName].apply(this, arguments);
-                    };
-                })(method);
+                proto[method + 'Async'] = ((syncFnName => function () {
+                    this.callbackAsync = true;
+                    return this[syncFnName].apply(this, arguments);
+                }))(method);
             }
         }
 
@@ -2949,7 +2899,7 @@ sinon.xhr = { XMLHttpRequest: this.XMLHttpRequest };
     xhr.supportsActiveX = typeof xhr.GlobalActiveXObject != "undefined";
     xhr.supportsXHR = typeof xhr.GlobalXMLHttpRequest != "undefined";
     xhr.workingXHR = xhr.supportsXHR ? xhr.GlobalXMLHttpRequest : xhr.supportsActiveX
-                                     ? function() { return new xhr.GlobalActiveXObject("MSXML2.XMLHTTP.3.0") } : false;
+                                     ? () => new xhr.GlobalActiveXObject("MSXML2.XMLHTTP.3.0") : false;
 
     /*jsl:ignore*/
     var unsafeHeaders = {
@@ -4123,7 +4073,7 @@ if (typeof module == "object" && typeof require == "function") {
     };
 
     mirrorPropAsAssertion("called", "expected %n to have been called at least once but was never called");
-    mirrorPropAsAssertion("notCalled", function (spy) { return !spy.called; },
+    mirrorPropAsAssertion("notCalled", spy => !spy.called,
                           "expected %n to not have been called but was called %c%C");
     mirrorPropAsAssertion("calledOnce", "expected %n to be called once but was called %c%C");
     mirrorPropAsAssertion("calledTwice", "expected %n to be called twice but was called %c%C");

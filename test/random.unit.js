@@ -42,9 +42,7 @@ describe("random.js", function () {
     it("provides numbers with a given precision", function() {
       var options = { min: 0, max: 1.5, precision: 0.5 };
       var results = _.chain(_.range(50))
-        .map(function() {
-          return faker.random.number(options);
-        })
+        .map(() => faker.random.number(options))
         .uniq()
         .value()
         .sort();
@@ -138,9 +136,7 @@ describe("random.js", function () {
     it("provides numbers with a given precision", function() {
       var options = { min: 0, max: 1.5, precision: 0.5 };
       var results = _.chain(_.range(50))
-        .map(function() {
-          return faker.random.float(options);
-        })
+        .map(() => faker.random.float(options))
         .uniq()
         .value()
         .sort();

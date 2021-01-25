@@ -117,33 +117,15 @@ function randomRevision(dots) {
 }
 
 var version_string = {
-    net: function () {
-        return [rnd(1, 4), rnd(0, 9), rnd(10000, 99999), rnd(0, 9)].join('.');
-    },
-    nt: function () {
-        return rnd(5, 6) + '.' + rnd(0, 3);
-    },
-    ie: function () {
-        return rnd(7, 11);
-    },
-    trident: function () {
-        return rnd(3, 7) + '.' + rnd(0, 1);
-    },
-    osx: function (delim) {
-        return [10, rnd(5, 10), rnd(0, 9)].join(delim || '.');
-    },
-    chrome: function () {
-        return [rnd(13, 39), 0, rnd(800, 899), 0].join('.');
-    },
-    presto: function () {
-        return '2.9.' + rnd(160, 190);
-    },
-    presto2: function () {
-        return rnd(10, 12) + '.00';
-    },
-    safari: function () {
-        return rnd(531, 538) + '.' + rnd(0, 2) + '.' + rnd(0,2);
-    }
+    net: () => [rnd(1, 4), rnd(0, 9), rnd(10000, 99999), rnd(0, 9)].join('.'),
+    nt: () => rnd(5, 6) + '.' + rnd(0, 3),
+    ie: () => rnd(7, 11),
+    trident: () => rnd(3, 7) + '.' + rnd(0, 1),
+    osx: delim => [10, rnd(5, 10), rnd(0, 9)].join(delim || '.'),
+    chrome: () => [rnd(13, 39), 0, rnd(800, 899), 0].join('.'),
+    presto: () => '2.9.' + rnd(160, 190),
+    presto2: () => rnd(10, 12) + '.00',
+    safari: () => rnd(531, 538) + '.' + rnd(0, 2) + '.' + rnd(0,2)
 };
 
 var browser = {

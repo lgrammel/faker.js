@@ -19,21 +19,15 @@ function isTestableModule(mod) {
 }
 
 function isMethodOf(mod) {
-    return function(meth) {
-        return typeof faker[mod][meth] === 'function';
-    };
+    return meth => typeof faker[mod][meth] === 'function';
 }
 
 function isTestableMethod(mod) {
-    return function(meth) {
-        return !(mod in IGNORED_METHODS && IGNORED_METHODS[mod].indexOf(meth) >= 0);
-    };
+    return meth => !(mod in IGNORED_METHODS && IGNORED_METHODS[mod].indexOf(meth) >= 0);
 }
 
 function both(pred1, pred2) {
-    return function(value) {
-        return pred1(value) && pred2(value);
-    };
+    return value => pred1(value) && pred2(value);
 }
 
 // Basic smoke tests to make sure each method is at least implemented and returns a value.

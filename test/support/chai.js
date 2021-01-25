@@ -31,23 +31,21 @@ require.register = function (path, fn){
     require.modules[path] = fn;
   };
 
-require.relative = function (parent) {
-    return function(p){
-      if ('.' != p[0]) return require(p);
+require.relative = parent => function(p){
+  if ('.' != p[0]) return require(p);
 
-      var path = parent.split('/')
-        , segs = p.split('/');
-      path.pop();
+  var path = parent.split('/')
+    , segs = p.split('/');
+  path.pop();
 
-      for (var i = 0; i < segs.length; i++) {
-        var seg = segs[i];
-        if ('..' == seg) path.pop();
-        else if ('.' != seg) path.push(seg);
-      }
+  for (var i = 0; i < segs.length; i++) {
+    var seg = segs[i];
+    if ('..' == seg) path.pop();
+    else if ('.' != seg) path.push(seg);
+  }
 
-      return require(path.join('/'));
-    };
-  };
+  return require(path.join('/'));
+};
 
 
 require.register("assertion.js", function(module, exports, require){
@@ -888,9 +886,7 @@ Assertion.prototype.keys = function(keys) {
     , len = keys.length;
 
   // Inclusion
-  ok = keys.every(function(key){
-    return ~actual.indexOf(key);
-  });
+  ok = keys.every(key => ~actual.indexOf(key));
 
   // Strict
   if (!flag(this, 'negate') && !flag(this, 'contains')) {
@@ -899,9 +895,7 @@ Assertion.prototype.keys = function(keys) {
 
   // Key string
   if (len > 1) {
-    keys = keys.map(function(key){
-      return util.inspect(key);
-    });
+    keys = keys.map(key => util.inspect(key));
     var last = keys.pop();
     str = keys.join(', ') + ', and ' + last;
   } else {
@@ -2249,9 +2243,7 @@ require.register("interface/expect.js", function(module, exports, require){
  */
 
 module.exports = function (chai, util) {
-  chai.expect = function (val, message) {
-    return new chai.Assertion(val, message);
-  };
+  chai.expect = (val, message) => new chai.Assertion(val, message);
 };
 
 
@@ -2492,9 +2484,7 @@ module.exports = _deepEqual;
 // For browser implementation
 if (!Buffer) {
   var Buffer = {
-    isBuffer: function () {
-      return false;
-    }
+    isBuffer: () => false
   };
 }
 
@@ -2948,7 +2938,7 @@ function inspect(obj, showHidden, depth, colors) {
   var ctx = {
     showHidden: showHidden,
     seen: [],
-    stylize: function (str) { return str; }
+    stylize: str => str
   };
   return formatValue(ctx, obj, (typeof depth === 'undefined' ? 2 : depth));
 }
@@ -3044,9 +3034,7 @@ function formatValue(ctx, value, recurseTimes) {
   if (array) {
     output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
   } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
+    output = keys.map(key => formatProperty(ctx, value, recurseTimes, visibleKeys, key, array));
   }
 
   ctx.seen.pop();
@@ -3131,13 +3119,9 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
       }
       if (str.indexOf('\n') > -1) {
         if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
+          str = str.split('\n').map(line => '  ' + line).join('\n').substr(2);
         } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
+          str = '\n' + str.split('\n').map(line => '   ' + line).join('\n');
         }
       }
     } else {
