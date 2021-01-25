@@ -1175,8 +1175,7 @@ require.register("browser/error.js", function(module, exports, require){
 
 module.exports = AssertionError;
 
-function AssertionError (options) {
-  options = options || {};
+function AssertionError(options = {}) {
   this.message = options.message;
   this.actual = options.actual;
   this.expected = options.expected;

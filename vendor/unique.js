@@ -30,12 +30,11 @@ unique.errorMessage = function (now, code, opts) {
   throw new Error(code + ' for uniqueness check \n\nMay not be able to generate any more unique values with current settings. \nTry adjusting maxTime or maxRetries parameters for faker.unique()')
 };
 
-unique.exec = function (method, args, opts) {
+unique.exec = function(method, args, opts = {}) {
   //console.log(currentIterations)
 
   var now = new Date().getTime();
 
-  opts = opts || {};
   opts.maxTime = opts.maxTime || 3;
   opts.maxRetries = opts.maxRetries || 50;
   opts.exclude = opts.exclude || exclude;
