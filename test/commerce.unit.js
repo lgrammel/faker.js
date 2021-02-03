@@ -1,7 +1,7 @@
 if (typeof module !== 'undefined') {
-    var assert = require('assert'),
-        sinon = require('sinon'),
-        faker = require('../index');
+    var assert = require('assert');
+    var sinon = require('sinon');
+    var faker = require('../index');
 }
 
 describe("commerce.js", function() {

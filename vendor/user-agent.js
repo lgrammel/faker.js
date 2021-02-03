@@ -48,22 +48,28 @@ function rnd(a, b) {
 
     if (a && typeof a === 'object') {
         //returns a random key from the passed object; keys are weighted by the decimal probability in their value
-        return (function (obj) {
-            var rand = rnd(0, 100) / 100, min = 0, max = 0, key, return_val;
+        return (
+            function (obj) {
+                var rand = rnd(0, 100) / 100;
+                var min = 0;
+                var max = 0;
+                var key;
+                var return_val;
 
-            for (key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    max = obj[key] + min;
-                    return_val = key;
-                    if (rand >= min && rand <= max) {
-                        break;
+                for (key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        max = obj[key] + min;
+                        return_val = key;
+                        if (rand >= min && rand <= max) {
+                            break;
+                        }
+                        min = min + obj[key];
                     }
-                    min = min + obj[key];
                 }
-            }
 
-            return return_val;
-        }(a));
+                return return_val;
+            }(a)
+        );
     }
 
     throw new TypeError('Invalid arguments passed to rnd. (' + (b ? a + ', ' + b : a) + ')');
@@ -85,8 +91,9 @@ function randomBrowserAndOS() {
         firefox:   .19384170608,
         safari:    .06186781118,
         opera:     .01574236955
-    }),
-    os = {
+    });
+
+    var os = {
         chrome:  {win: .89,  mac: .09 , lin: .02},
         firefox: {win: .83,  mac: .16,  lin: .01},
         opera:   {win: .91,  mac: .03 , lin: .06},
@@ -149,12 +156,14 @@ var version_string = {
 var browser = {
     firefox: function firefox(arch) {
         //https://developer.mozilla.org/en-US/docs/Gecko_user_agent_string_reference
-        var firefox_ver = rnd(5, 15) + randomRevision(2),
-            gecko_ver = 'Gecko/20100101 Firefox/' + firefox_ver,
-            proc = randomProc(arch),
-            os_ver = (arch === 'win') ? '(Windows NT ' + version_string.nt() + ((proc) ? '; ' + proc : '')
-            : (arch === 'mac') ? '(Macintosh; ' + proc + ' Mac OS X ' + version_string.osx()
-            : '(X11; Linux ' + proc;
+        var firefox_ver = rnd(5, 15) + randomRevision(2);
+
+        var gecko_ver = 'Gecko/20100101 Firefox/' + firefox_ver;
+        var proc = randomProc(arch);
+
+        var os_ver = (arch === 'win') ? '(Windows NT ' + version_string.nt() + ((proc) ? '; ' + proc : '')
+        : (arch === 'mac') ? '(Macintosh; ' + proc + ' Mac OS X ' + version_string.osx()
+        : '(X11; Linux ' + proc;
 
         return 'Mozilla/5.0 ' + os_ver + '; rv:' + firefox_ver.slice(0, -2) + ') ' + gecko_ver;
     },
@@ -174,29 +183,32 @@ var browser = {
 
     opera: function opera(arch) {
         //http://www.opera.com/docs/history/
-        var presto_ver = ' Presto/' + version_string.presto() + ' Version/' + version_string.presto2() + ')',
-            os_ver = (arch === 'win') ? '(Windows NT ' + version_string.nt() + '; U; ' + randomLang() + presto_ver
-            : (arch === 'lin') ? '(X11; Linux ' + randomProc(arch) + '; U; ' + randomLang() + presto_ver
-            : '(Macintosh; Intel Mac OS X ' + version_string.osx() + ' U; ' + randomLang() + ' Presto/' +
-            version_string.presto() + ' Version/' + version_string.presto2() + ')';
+        var presto_ver = ' Presto/' + version_string.presto() + ' Version/' + version_string.presto2() + ')';
+
+        var os_ver = (arch === 'win') ? '(Windows NT ' + version_string.nt() + '; U; ' + randomLang() + presto_ver
+        : (arch === 'lin') ? '(X11; Linux ' + randomProc(arch) + '; U; ' + randomLang() + presto_ver
+        : '(Macintosh; Intel Mac OS X ' + version_string.osx() + ' U; ' + randomLang() + ' Presto/' +
+        version_string.presto() + ' Version/' + version_string.presto2() + ')';
 
         return 'Opera/' + rnd(9, 14) + '.' + rnd(0, 99) + ' ' + os_ver;
     },
 
     safari: function safari(arch) {
-        var safari = version_string.safari(),
-            ver = rnd(4, 7) + '.' + rnd(0,1) + '.' + rnd(0,10),
-            os_ver = (arch === 'mac') ? '(Macintosh; ' + randomProc('mac') + ' Mac OS X '+ version_string.osx('_') + ' rv:' + rnd(2, 6) + '.0; '+ randomLang() + ') '
-            : '(Windows; U; Windows NT ' + version_string.nt() + ')';
+        var safari = version_string.safari();
+        var ver = rnd(4, 7) + '.' + rnd(0,1) + '.' + rnd(0,10);
+
+        var os_ver = (arch === 'mac') ? '(Macintosh; ' + randomProc('mac') + ' Mac OS X '+ version_string.osx('_') + ' rv:' + rnd(2, 6) + '.0; '+ randomLang() + ') '
+        : '(Windows; U; Windows NT ' + version_string.nt() + ')';
 
         return 'Mozilla/5.0 ' + os_ver + 'AppleWebKit/' + safari + ' (KHTML, like Gecko) Version/' + ver + ' Safari/' + safari;
     },
 
     chrome: function chrome(arch) {
-        var safari = version_string.safari(),
-            os_ver = (arch === 'mac') ? '(Macintosh; ' + randomProc('mac') + ' Mac OS X ' + version_string.osx('_') + ') '
-            : (arch === 'win') ? '(Windows; U; Windows NT ' + version_string.nt() + ')'
-            : '(X11; Linux ' + randomProc(arch);
+        var safari = version_string.safari();
+
+        var os_ver = (arch === 'mac') ? '(Macintosh; ' + randomProc('mac') + ' Mac OS X ' + version_string.osx('_') + ') '
+        : (arch === 'win') ? '(Windows; U; Windows NT ' + version_string.nt() + ')'
+        : '(X11; Linux ' + randomProc(arch);
 
         return 'Mozilla/5.0 ' + os_ver + ' AppleWebKit/' + safari + ' (KHTML, like Gecko) Chrome/' + version_string.chrome() + ' Safari/' + safari;
     }

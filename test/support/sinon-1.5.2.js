@@ -108,7 +108,8 @@ var buster = (function (setTimeout, B) {
         },
 
         flatten: function flatten(arr) {
-            var result = [], arr = arr || [];
+            var result = [];
+            var arr = arr || [];
             for (var i = 0, l = arr.length; i < l; ++i) {
                 result = result.concat(buster.isArray(arr[i]) ? flatten(arr[i]) : arr[i]);
             }
@@ -137,7 +138,8 @@ var buster = (function (setTimeout, B) {
                 }
             }
             if (fns.length == 0) { return cb(null, []); }
-            var remaining = fns.length, results = [];
+            var remaining = fns.length;
+            var results = [];
             function makeDone(num) {
                 return function done(err, result) {
                     if (err) { return cb(err); }
@@ -374,7 +376,11 @@ buster.format.ascii = (function () {
         processed = processed || [];
         processed.push(object);
         indent = indent || 0;
-        var pieces = [], properties = keys(object), prop, str, obj;
+        var pieces = [];
+        var properties = keys(object);
+        var prop;
+        var str;
+        var obj;
         var is = "";
         var length = 3;
 
@@ -407,7 +413,10 @@ buster.format.ascii = (function () {
 
     ascii.element = function (element) {
         var tagName = element.tagName.toLowerCase();
-        var attrs = element.attributes, attribute, pairs = [], attrName;
+        var attrs = element.attributes;
+        var attribute;
+        var pairs = [];
+        var attrName;
 
         for (var i = 0, l = attrs.length; i < l; ++i) {
             attribute = attrs.item(i);
@@ -617,7 +626,9 @@ var sinon = (function (buster) {
                 return true;
             }
 
-            var prop, aLength = 0, bLength = 0;
+            var prop;
+            var aLength = 0;
+            var bLength = 0;
 
             for (prop in a) {
                 aLength += 1;
@@ -655,7 +666,9 @@ var sinon = (function (buster) {
 
         functionToString: function toString() {
             if (this.getCall && this.callCount) {
-                var thisValue, prop, i = this.callCount;
+                var thisValue;
+                var prop;
+                var i = this.callCount;
 
                 while (i--) {
                     thisValue = this.getCall(i).thisValue;
@@ -1203,7 +1216,8 @@ var sinon = (function (buster) {
 
             invoke: function invoke(func, thisValue, args) {
                 var matching = matchingFake(this.fakes, args);
-                var exception, returnValue;
+                var exception;
+                var returnValue;
 
                 incrementCallCount.call(this);
                 push.call(this.thisValues, thisValue);
@@ -1719,7 +1733,8 @@ var sinon = (function (buster) {
     var uuid = 0;
 
     sinon.extend(stub, (function () {
-        var slice = Array.prototype.slice, proto;
+        var slice = Array.prototype.slice;
+        var proto;
 
         function throwsException(error, message) {
             if (typeof error == "string") {
@@ -1912,7 +1927,6 @@ var sinon = (function (buster) {
         }
 
         return proto;
-
     }()));
 
     if (commonJSModule) {
@@ -2022,7 +2036,8 @@ var sinon = (function (buster) {
 
             verify: function verify() {
                 var expectations = this.expectations || {};
-                var messages = [], met = [];
+                var messages = [];
+                var met = [];
 
                 each(this.proxies, function (proxy) {
                     each(expectations[proxy], function (expectation) {
@@ -2047,7 +2062,8 @@ var sinon = (function (buster) {
 
             invokeMethod: function invokeMethod(method, thisValue, args) {
                 var expectations = this.expectations && this.expectations[method];
-                var length = expectations && expectations.length || 0, i;
+                var length = expectations && expectations.length || 0;
+                var i;
 
                 for (i = 0; i < length; i += 1) {
                     if (!expectations[i].met() &&
@@ -2056,7 +2072,9 @@ var sinon = (function (buster) {
                     }
                 }
 
-                var messages = [], available, exhausted = 0;
+                var messages = [];
+                var available;
+                var exhausted = 0;
 
                 for (i = 0; i < length; i += 1) {
                     if (expectations[i].allowsCall(thisValue, args)) {
@@ -2557,8 +2575,10 @@ if (typeof sinon == "undefined") {
         }
 
         var strings = str.split(":");
-        var l = strings.length, i = l;
-        var ms = 0, parsed;
+        var l = strings.length;
+        var i = l;
+        var ms = 0;
+        var parsed;
 
         if (l > 3 || !/^(\d\d:){0,2}\d\d?$/.test(str)) {
             throw new Error("tick only understands numbers and 'h:m:s'");
@@ -2633,7 +2653,9 @@ if (typeof sinon == "undefined") {
 
         tick: function tick(ms) {
             ms = typeof ms == "number" ? ms : parseTime(ms);
-            var tickFrom = this.now, tickTo = this.now + ms, previous = this.now;
+            var tickFrom = this.now;
+            var tickTo = this.now + ms;
+            var previous = this.now;
             var timer = this.firstTimerInRange(tickFrom, tickTo);
 
             var firstException;
@@ -2659,7 +2681,9 @@ if (typeof sinon == "undefined") {
         },
 
         firstTimerInRange: function (from, to) {
-            var timer, smallest, originalTimer;
+            var timer;
+            var smallest;
+            var originalTimer;
 
             for (var id in this.timeouts) {
                 if (this.timeouts.hasOwnProperty(id)) {
@@ -3779,7 +3803,9 @@ if (typeof module == "object" && typeof require == "function") {
 
             var sandbox = prepareSandboxFromConfig(config);
             sandbox.args = sandbox.args || [];
-            var prop, value, exposed = sandbox.inject({});
+            var prop;
+            var value;
+            var exposed = sandbox.inject({});
 
             if (config.properties) {
                 for (var i = 0, l = config.properties.length; i < l; i++) {
@@ -3841,7 +3867,8 @@ if (typeof module == "object" && typeof require == "function") {
             var config = sinon.getConfig(sinon.config);
             config.injectInto = config.injectIntoThis && this || config.injectInto;
             var sandbox = sinon.sandbox.create(config);
-            var exception, result;
+            var exception;
+            var result;
             var args = Array.prototype.slice.call(arguments).concat(sandbox.args);
 
             try {
@@ -3909,7 +3936,8 @@ if (typeof module == "object" && typeof require == "function") {
                 setUp.apply(this, arguments);
             }
 
-            var exception, result;
+            var exception;
+            var result;
 
             try {
                 result = property.apply(this, arguments);
@@ -3938,7 +3966,10 @@ if (typeof module == "object" && typeof require == "function") {
 
         prefix = prefix || "test";
         var rPrefix = new RegExp("^" + prefix);
-        var methods = {}, testName, property, method;
+        var methods = {};
+        var testName;
+        var property;
+        var method;
         var setUp = tests.setUp;
         var tearDown = tests.tearDown;
 
@@ -4074,7 +4105,8 @@ if (typeof module == "object" && typeof require == "function") {
 
         callOrder: function assertCallOrder() {
             verifyIsStub.apply(null, arguments);
-            var expected = "", actual = "";
+            var expected = "";
+            var actual = "";
 
             if (!sinon.calledInOrder(arguments)) {
                 try {
