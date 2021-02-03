@@ -774,7 +774,7 @@ var sinon = (function (buster) {
         var formatter = sinon.create(buster.format);
         formatter.quoteStrings = false;
         sinon.format = function () {
-            return formatter.ascii.apply(formatter, arguments);
+            return formatter.ascii(...arguments);
         };
     } else if (isNode) {
         try {
@@ -1280,7 +1280,7 @@ var sinon = (function (buster) {
                 push.call(this.fakes, fake);
 
                 fake.withArgs = function () {
-                    return original.withArgs.apply(original, arguments);
+                    return original.withArgs(...arguments);
                 };
 
                 for (var i = 0; i < this.args.length; i++) {
@@ -1455,15 +1455,15 @@ var sinon = (function (buster) {
 
             calledWithExactly: function calledWithExactly() {
                 return arguments.length == this.args.length &&
-                    this.calledWith.apply(this, arguments);
+                    this.calledWith(...arguments);
             },
 
             notCalledWith: function notCalledWith() {
-                return !this.calledWith.apply(this, arguments);
+                return !this.calledWith(...arguments);
             },
 
             notCalledWithMatch: function notCalledWithMatch() {
-              return !this.calledWithMatch.apply(this, arguments);
+              return !this.calledWithMatch(...arguments);
             },
 
             returned: function returned(value) {
@@ -2284,7 +2284,7 @@ var sinon = (function (buster) {
             },
 
             withExactArgs: function withExactArgs() {
-                this.withArgs.apply(this, arguments);
+                this.withArgs(...arguments);
                 this.expectsExactArgCount = true;
                 return this;
             },
@@ -2432,7 +2432,7 @@ var sinon = (function (buster) {
         },
 
         spy: function spy() {
-            return this.add(sinon.spy.apply(sinon, arguments));
+            return this.add(sinon.spy(...arguments));
         },
 
         stub: function stub(object, property, value) {
@@ -2454,7 +2454,7 @@ var sinon = (function (buster) {
                 }
             }
             if (!property && !!object && typeof object == "object") {
-                var stubbedObj = sinon.stub.apply(sinon, arguments);
+                var stubbedObj = sinon.stub(...arguments);
 
                 for (var prop in stubbedObj) {
                     if (typeof stubbedObj[prop] === "function") {
@@ -2465,26 +2465,26 @@ var sinon = (function (buster) {
                 return stubbedObj;
             }
 
-            return this.add(sinon.stub.apply(sinon, arguments));
+            return this.add(sinon.stub(...arguments));
         },
 
         mock: function mock() {
-            return this.add(sinon.mock.apply(sinon, arguments));
+            return this.add(sinon.mock(...arguments));
         },
 
         inject: function inject(obj) {
             var col = this;
 
             obj.spy = function () {
-                return col.spy.apply(col, arguments);
+                return col.spy(...arguments);
             };
 
             obj.stub = function () {
-                return col.stub.apply(col, arguments);
+                return col.stub(...arguments);
             };
 
             obj.mock = function () {
-                return col.mock.apply(col, arguments);
+                return col.mock(...arguments);
             };
 
             return obj;
@@ -3462,7 +3462,7 @@ sinon.fakeServer = (function () {
             if (typeof response.response == "function") {
                 var ru = response.url;
                 var args = [request].concat(!ru ? [] : requestUrl.match(ru).slice(1));
-                return response.response.apply(response, args);
+                return response.response(...args);
             }
 
             return true;
@@ -3550,7 +3550,7 @@ sinon.fakeServer = (function () {
         },
 
         respond: function respond() {
-            if (arguments.length > 0) this.respondWith.apply(this, arguments);
+            if (arguments.length > 0) this.respondWith(...arguments);
             var queue = this.queue || [];
             var request;
 
@@ -3728,7 +3728,7 @@ if (typeof module == "object" && typeof require == "function") {
 
         if (config.useFakeTimers) {
             if (typeof config.useFakeTimers == "object") {
-                sandbox.useFakeTimers.apply(sandbox, config.useFakeTimers);
+                sandbox.useFakeTimers(...config.useFakeTimers);
             } else {
                 sandbox.useFakeTimers();
             }
@@ -3739,7 +3739,7 @@ if (typeof module == "object" && typeof require == "function") {
 
     sinon.sandbox = sinon.extend(sinon.create(sinon.collection), {
         useFakeTimers: function useFakeTimers() {
-            this.clock = sinon.useFakeTimers.apply(sinon, arguments);
+            this.clock = sinon.useFakeTimers(...arguments);
 
             return this.add(this.clock);
         },
@@ -4048,7 +4048,7 @@ if (typeof module == "object" && typeof require == "function") {
             }
 
             if (failed) {
-                failAssertion(this, fake.printf.apply(fake, [message].concat(args)));
+                failAssertion(this, fake.printf(...[message].concat(args)));
             } else {
                 assert.pass(name);
             }
@@ -4073,7 +4073,7 @@ if (typeof module == "object" && typeof require == "function") {
         pass: function pass(assertion) {},
 
         callOrder: function assertCallOrder() {
-            verifyIsStub.apply(null, arguments);
+            verifyIsStub(...arguments);
             var expected = "", actual = "";
 
             if (!sinon.calledInOrder(arguments)) {
